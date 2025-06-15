@@ -8,5 +8,5 @@ SummaryLLM = ChatOpenAI(
 )
 
 ExtractionLLM = ChatOpenAI(
-    name="Extraction", model="gpt-4o-mini", temperature=0.0, tags=["extraction", "API"]
+    name="Extraction", model="gpt-4o", temperature=0.0, tags=["extraction", "API"]
 )
