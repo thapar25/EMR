@@ -19,6 +19,7 @@ dependencies = [
 dev = [
     "ipykernel>=6.29.5",
     "isort>=6.0.1",
+    "moviepy>=2.2.1",
     "pandas>=2.3.0",
     "ruff>=0.11.13",
     "sphinx>=8.2.3",
