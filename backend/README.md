@@ -1,4 +1,4 @@
-# Project Title
+# EHR Extraction - FastAPI
 
 ## Overview
 This project is a FastAPI application designed to provide a robust backend for managing electronic health records (EHR). It includes a set of API endpoints for interacting with health data and is structured to facilitate easy development and documentation.
