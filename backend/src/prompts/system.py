@@ -42,4 +42,4 @@ Given a transcript and visit metadata, produce a clinical note that follows this
 Your goal is to create a clear, complete medical document that enables downstream structured data extraction and clinician review.
 """
 
-extraction = """You are a clinical scribe. Given this clinical note summary, generate a highly accurate SOAP-formatted EHR, capturing all minute details. Only include information that is explicitly stated in the summary. Do not invent or assume details."""
+extraction = """You are a clinical scribe. Given this clinical note summary, generate a highly accurate SOAP-formatted EMR, capturing all minute details. Only include information that is explicitly stated in the summary. Do not invent or assume details."""

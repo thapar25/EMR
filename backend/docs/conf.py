@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "EHR Extraction"
+project = "EMR Extraction"
 copyright = "2025, Pulkit Thapar"
 author = "Pulkit Thapar"
 release = "0.0.1"
