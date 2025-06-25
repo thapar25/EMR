@@ -1,5 +1,5 @@
-import React from 'react';
-import { User, Settings, LogOut } from 'lucide-react';
+import React from "react";
+import { User, Settings, LogOut } from "lucide-react";
 
 interface HeaderProps {
   onLogin?: () => void;
@@ -7,10 +7,10 @@ interface HeaderProps {
   isAuthenticated?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ 
-  onLogin, 
-  onLogout, 
-  isAuthenticated = false 
+export const Header: React.FC<HeaderProps> = ({
+  onLogin,
+  onLogout,
+  isAuthenticated = false,
 }) => {
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
               </h1>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
@@ -37,9 +37,11 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-gray-600" />
                   </div>
-                  <span className="text-sm font-medium text-gray-700">User</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    User
+                  </span>
                 </div>
-                <button 
+                <button
                   onClick={onLogout}
                   className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                 >

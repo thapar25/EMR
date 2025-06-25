@@ -1,5 +1,5 @@
-import React from 'react';
-import { AlertCircle, X } from 'lucide-react';
+import React from "react";
+import { AlertCircle, X } from "lucide-react";
 
 interface ErrorMessageProps {
   message: string;
@@ -10,10 +10,12 @@ interface ErrorMessageProps {
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   message,
   onDismiss,
-  className = '',
+  className = "",
 }) => {
   return (
-    <div className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}>
+    <div
+      className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}
+    >
       <div className="flex items-start">
         <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
         <div className="ml-3 flex-1">

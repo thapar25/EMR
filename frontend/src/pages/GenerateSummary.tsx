@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Zap, Edit3, ArrowRight, ArrowLeft } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { StreamingChunk, TranscriptData, AppState } from '../types';
-import { ApiService } from '../services/api';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Zap, Edit3, ArrowRight, ArrowLeft } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { StreamingChunk, TranscriptData, AppState } from "../types";
+import { ApiService } from "../services/api";
 
 interface GenerateSummaryProps {
   transcriptData: TranscriptData | null;
@@ -29,7 +29,7 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
   updateState,
 }) => {
   const navigate = useNavigate();
-  const [editableContent, setEditableContent] = useState('');
+  const [editableContent, setEditableContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [streamingComplete, setStreamingComplete] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -38,7 +38,12 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
   const apiService = ApiService.getInstance();
 
   useEffect(() => {
-    if (transcriptData && !isStreaming && streamingChunks.length === 0 && !streamInitiatedRef.current) {
+    if (
+      transcriptData &&
+      !isStreaming &&
+      streamingChunks.length === 0 &&
+      !streamInitiatedRef.current
+    ) {
       streamInitiatedRef.current = true;
       startSummaryStream();
     }
@@ -54,7 +59,7 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
 
     try {
       const stream = await apiService.getSummaryStream(transcriptData.content);
-      
+
       if (!stream) {
         const mockStream = apiService.createMockStream();
         await processStream(mockStream);
@@ -63,8 +68,8 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
 
       await processStream(stream);
     } catch (error) {
-      console.error('Streaming error:', error);
-      onSetError('Failed to generate summary. Please try again.');
+      console.error("Streaming error:", error);
+      onSetError("Failed to generate summary. Please try again.");
       setIsStreaming(false);
     }
   };
@@ -72,17 +77,17 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
   const processStream = async (stream: ReadableStream<Uint8Array>) => {
     const reader = stream.getReader();
     const decoder = new TextDecoder();
-    let buffer = '';
+    let buffer = "";
 
     try {
       while (true) {
         const { done, value } = await reader.read();
-        
+
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
           if (line.trim()) {
@@ -93,12 +98,12 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
                   id: Date.now().toString() + Math.random(),
                   content: parsed.delta,
                   timestamp: new Date(),
-                  type: 'data',
+                  type: "data",
                 };
                 onAddChunk(chunk);
               }
             } catch (parseError) {
-              console.warn('Failed to parse chunk:', line);
+              console.warn("Failed to parse chunk:", line);
             }
           }
         }
@@ -107,13 +112,15 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
       setStreamingComplete(true);
       setIsStreaming(false);
     } catch (error) {
-      console.error('Stream processing error:', error);
-      onSetError('Error processing summary stream');
+      console.error("Stream processing error:", error);
+      onSetError("Error processing summary stream");
       setIsStreaming(false);
     }
   };
 
-  const combinedContent = streamingChunks.map(chunk => chunk.content).join('');
+  const combinedContent = streamingChunks
+    .map((chunk) => chunk.content)
+    .join("");
 
   useEffect(() => {
     if (combinedContent) {
@@ -133,12 +140,12 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
 
   const handleSubmit = () => {
     onNext(editableContent);
-    navigate('/extract');
+    navigate("/extract");
   };
 
   const handlePrevious = () => {
     onPrevious();
-    navigate('/upload');
+    navigate("/upload");
   };
 
   const handleRetry = () => {
@@ -148,9 +155,18 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
 
   const renderMarkdown = (content: string) => {
     return content
-      .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold text-gray-900 mb-4">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold text-gray-800 mb-3 mt-6">$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium text-gray-700 mb-2 mt-4">$1</h3>')
+      .replace(
+        /^# (.*$)/gm,
+        '<h1 class="text-2xl font-bold text-gray-900 mb-4">$1</h1>',
+      )
+      .replace(
+        /^## (.*$)/gm,
+        '<h2 class="text-xl font-semibold text-gray-800 mb-3 mt-6">$1</h2>',
+      )
+      .replace(
+        /^### (.*$)/gm,
+        '<h3 class="text-lg font-medium text-gray-700 mb-2 mt-4">$1</h3>',
+      )
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
       .replace(/^- (.*$)/gm, '<li class="ml-4 list-disc">$1</li>')
@@ -170,12 +186,11 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
           Clinical Summary Generation
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          {isStreaming 
-            ? 'Generating AI-powered clinical summary from your transcript...' 
+          {isStreaming
+            ? "Generating AI-powered clinical summary from your transcript..."
             : streamingComplete
-            ? 'Summary generation complete. Review and edit the content as needed.'
-            : 'Ready to generate clinical summary from your transcript.'
-          }
+              ? "Summary generation complete. Review and edit the content as needed."
+              : "Ready to generate clinical summary from your transcript."}
         </p>
       </div>
 
@@ -183,22 +198,26 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
         <div className="border-b border-gray-200 px-6 py-4 bg-gray-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className={`w-2 h-2 rounded-full mr-3 ${
-                isStreaming ? 'bg-blue-500 animate-pulse' : 
-                streamingComplete ? 'bg-green-500' : 'bg-gray-400'
-              }`} />
+              <div
+                className={`w-2 h-2 rounded-full mr-3 ${
+                  isStreaming
+                    ? "bg-blue-500 animate-pulse"
+                    : streamingComplete
+                      ? "bg-green-500"
+                      : "bg-gray-400"
+                }`}
+              />
               <span className="text-sm font-medium text-gray-700">
-                {isStreaming ? 'Generating Summary...' : 
-                 streamingComplete ? 'Summary Complete' : 'Ready to Generate'}
+                {isStreaming
+                  ? "Generating Summary..."
+                  : streamingComplete
+                    ? "Summary Complete"
+                    : "Ready to Generate"}
               </span>
             </div>
             <div className="flex items-center space-x-2">
               {!streamingComplete && !isStreaming && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleRetry}
-                >
+                <Button variant="outline" size="sm" onClick={handleRetry}>
                   Generate Summary
                 </Button>
               )}
@@ -209,7 +228,7 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
                   onClick={isEditing ? handleSave : handleEdit}
                   icon={<Edit3 className="w-4 h-4" />}
                 >
-                  {isEditing ? 'Save Changes' : 'Edit Content'}
+                  {isEditing ? "Save Changes" : "Edit Content"}
                 </Button>
               )}
             </div>
@@ -226,17 +245,21 @@ export const GenerateSummary: React.FC<GenerateSummaryProps> = ({
                 placeholder="Edit your clinical summary..."
               />
             ) : (
-              <div 
+              <div
                 ref={contentRef}
                 className="prose prose-blue max-w-none min-h-[200px]"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(editableContent) }}
+                dangerouslySetInnerHTML={{
+                  __html: renderMarkdown(editableContent),
+                }}
               />
             )
           ) : (
             <div className="flex items-center justify-center h-48 text-gray-500">
               <div className="text-center">
                 <Zap className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p>Click "Generate Summary" to start processing your transcript</p>
+                <p>
+                  Click "Generate Summary" to start processing your transcript
+                </p>
               </div>
             </div>
           )}

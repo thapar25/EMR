@@ -1,6 +1,6 @@
-import { TranscriptData } from '../types';
+import { TranscriptData } from "../types";
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 export class ApiService {
   private static instance: ApiService;
@@ -12,26 +12,30 @@ export class ApiService {
     return ApiService.instance;
   }
 
-  async uploadTranscript(transcriptData: TranscriptData): Promise<{ success: boolean; message?: string }> {
+  async uploadTranscript(
+    transcriptData: TranscriptData,
+  ): Promise<{ success: boolean; message?: string }> {
     try {
       // For now, just simulate upload success since we're focusing on summary/extract
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return { success: true };
     } catch (error) {
-      console.error('Upload transcript error:', error);
-      return { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Upload failed' 
+      console.error("Upload transcript error:", error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Upload failed",
       };
     }
   }
 
-  async getSummaryStream(dialogue: string): Promise<ReadableStream<Uint8Array> | null> {
+  async getSummaryStream(
+    dialogue: string,
+  ): Promise<ReadableStream<Uint8Array> | null> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/summary`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ dialogue }),
       });
@@ -42,17 +46,19 @@ export class ApiService {
 
       return response.body;
     } catch (error) {
-      console.error('Get summary stream error:', error);
+      console.error("Get summary stream error:", error);
       return null;
     }
   }
 
-  async extractSOAP(summary: string): Promise<{ success: boolean; data?: any; message?: string }> {
+  async extractSOAP(
+    summary: string,
+  ): Promise<{ success: boolean; data?: any; message?: string }> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/extract`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ summary }),
       });
@@ -64,10 +70,10 @@ export class ApiService {
       const data = await response.json();
       return { success: true, data };
     } catch (error) {
-      console.error('Extract SOAP error:', error);
-      return { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Extraction failed' 
+      console.error("Extract SOAP error:", error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Extraction failed",
       };
     }
   }
@@ -76,7 +82,7 @@ export class ApiService {
   createMockStream(): ReadableStream<Uint8Array> {
     const encoder = new TextEncoder();
     let chunkIndex = 0;
-    
+
     const mockChunks = [
       '{"delta": "# Clinical Summary\\n\\nAnalyzing transcript..."}',
       '{"delta": "\\n\\n## Patient Information\\n\\n- Chief Complaint: Follow-up visit"}',
@@ -91,7 +97,7 @@ export class ApiService {
       start(controller) {
         const interval = setInterval(() => {
           if (chunkIndex < mockChunks.length) {
-            const chunk = encoder.encode(mockChunks[chunkIndex] + '\n');
+            const chunk = encoder.encode(mockChunks[chunkIndex] + "\n");
             controller.enqueue(chunk);
             chunkIndex++;
           } else {

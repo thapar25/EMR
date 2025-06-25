@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BarChart3, ArrowLeft, RefreshCw, AlertTriangle, Loader2 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { ParsedJsonValue } from '../types';
-import { parseJsonValues, formatJsonValue } from '../utils/json';
-import { ApiService } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  BarChart3,
+  ArrowLeft,
+  RefreshCw,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { ParsedJsonValue } from "../types";
+import { parseJsonValues, formatJsonValue } from "../utils/json";
+import { ApiService } from "../services/api";
 
 interface ExtractSOAPProps {
   processedContent: string;
@@ -21,7 +27,9 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
 }) => {
   const navigate = useNavigate();
   const [parsedValues, setParsedValues] = useState<ParsedJsonValue[]>([]);
-  const [selectedValue, setSelectedValue] = useState<ParsedJsonValue | null>(null);
+  const [selectedValue, setSelectedValue] = useState<ParsedJsonValue | null>(
+    null,
+  );
   const [filterNull, setFilterNull] = useState(false);
   const [isExtracting, setIsExtracting] = useState(false);
   const [soapData, setSoapData] = useState<any>(null);
@@ -41,18 +49,18 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
 
     try {
       const result = await apiService.extractSOAP(processedContent);
-      
+
       if (result.success && result.data) {
         setSoapData(result.data);
         const parsed = parseJsonValues(JSON.stringify(result.data));
         setParsedValues(parsed);
       } else {
-        onSetError(result.message || 'Failed to extract SOAP note');
+        onSetError(result.message || "Failed to extract SOAP note");
         createMockSOAPData();
       }
     } catch (error) {
-      console.error('SOAP extraction error:', error);
-      onSetError('Error extracting SOAP note');
+      console.error("SOAP extraction error:", error);
+      onSetError("Error extracting SOAP note");
       createMockSOAPData();
     } finally {
       setIsExtracting(false);
@@ -63,12 +71,13 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
     const mockSOAPData = {
       subjective: {
         chief_complaint: "Follow-up visit for hypertension",
-        history_present_illness: "Patient reports feeling well overall. Blood pressure has been stable at home.",
+        history_present_illness:
+          "Patient reports feeling well overall. Blood pressure has been stable at home.",
         review_of_systems: {
           cardiovascular: "No chest pain or palpitations",
           respiratory: "No shortness of breath",
           neurological: null,
-          gastrointestinal: null
+          gastrointestinal: null,
         },
         past_medical_history: ["Hypertension", "Type 2 Diabetes"],
         medications: ["Lisinopril 10mg daily", "Metformin 500mg twice daily"],
@@ -76,8 +85,8 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
         social_history: {
           smoking: "Former smoker, quit 5 years ago",
           alcohol: "Occasional social drinking",
-          exercise: null
-        }
+          exercise: null,
+        },
       },
       objective: {
         vital_signs: {
@@ -85,36 +94,37 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
           heart_rate: "72 bpm",
           temperature: "98.6°F",
           respiratory_rate: null,
-          oxygen_saturation: null
+          oxygen_saturation: null,
         },
         physical_exam: {
           general: "Well-appearing, no acute distress",
           cardiovascular: "Regular rate and rhythm, no murmurs",
           respiratory: "Clear to auscultation bilaterally",
           neurological: null,
-          extremities: null
+          extremities: null,
         },
         laboratory_results: null,
-        imaging_results: null
+        imaging_results: null,
       },
       assessment: {
         primary_diagnosis: "Hypertension, well-controlled",
         secondary_diagnoses: ["Type 2 Diabetes Mellitus"],
-        clinical_impression: "Patient's hypertension remains well-controlled on current regimen.",
-        risk_factors: null
+        clinical_impression:
+          "Patient's hypertension remains well-controlled on current regimen.",
+        risk_factors: null,
       },
       plan: {
         medications: {
           continue: ["Lisinopril 10mg daily", "Metformin 500mg twice daily"],
           start: null,
           stop: null,
-          modify: null
+          modify: null,
         },
         follow_up: "Return in 3 months for routine follow-up",
         patient_education: "Continue current lifestyle modifications",
         referrals: null,
-        additional_testing: null
-      }
+        additional_testing: null,
+      },
     };
 
     setSoapData(mockSOAPData);
@@ -122,27 +132,27 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
     setParsedValues(parsed);
   };
 
-  const nullValues = parsedValues.filter(v => v.isNull);
-  const nonNullValues = parsedValues.filter(v => !v.isNull);
+  const nullValues = parsedValues.filter((v) => v.isNull);
+  const nonNullValues = parsedValues.filter((v) => !v.isNull);
   const displayValues = filterNull ? nullValues : parsedValues;
 
   const getValueTypeColor = (value: any) => {
-    if (value === null) return 'text-red-600 bg-red-50';
-    if (typeof value === 'string') return 'text-blue-600 bg-blue-50';
-    if (typeof value === 'number') return 'text-green-600 bg-green-50';
-    if (typeof value === 'boolean') return 'text-purple-600 bg-purple-50';
-    if (Array.isArray(value)) return 'text-orange-600 bg-orange-50';
-    return 'text-gray-600 bg-gray-50';
+    if (value === null) return "text-red-600 bg-red-50";
+    if (typeof value === "string") return "text-blue-600 bg-blue-50";
+    if (typeof value === "number") return "text-green-600 bg-green-50";
+    if (typeof value === "boolean") return "text-purple-600 bg-purple-50";
+    if (Array.isArray(value)) return "text-orange-600 bg-orange-50";
+    return "text-gray-600 bg-gray-50";
   };
 
   const getValueTypeLabel = (value: any) => {
-    if (value === null) return 'NULL';
-    if (typeof value === 'string') return 'String';
-    if (typeof value === 'number') return 'Number';
-    if (typeof value === 'boolean') return 'Boolean';
-    if (Array.isArray(value)) return 'Array';
-    if (typeof value === 'object') return 'Object';
-    return 'Unknown';
+    if (value === null) return "NULL";
+    if (typeof value === "string") return "String";
+    if (typeof value === "number") return "Number";
+    if (typeof value === "boolean") return "Boolean";
+    if (Array.isArray(value)) return "Array";
+    if (typeof value === "object") return "Object";
+    return "Unknown";
   };
 
   const handleRetry = () => {
@@ -151,12 +161,12 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
 
   const handlePrevious = () => {
     onPrevious();
-    navigate('/summary');
+    navigate("/summary");
   };
 
   const handleReset = () => {
     onReset();
-    navigate('/upload');
+    navigate("/upload");
   };
 
   if (isExtracting) {
@@ -170,7 +180,8 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
             Extracting SOAP Note
           </h2>
           <p className="text-gray-600">
-            Processing your clinical summary to extract structured SOAP note data...
+            Processing your clinical summary to extract structured SOAP note
+            data...
           </p>
         </div>
       </div>
@@ -187,8 +198,9 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
           SOAP Note Extraction
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Structured clinical data extracted from your summary. Null values are highlighted 
-          and may indicate areas that need additional information or clarification.
+          Structured clinical data extracted from your summary. Null values are
+          highlighted and may indicate areas that need additional information or
+          clarification.
         </p>
       </div>
 
@@ -197,33 +209,28 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
           <div className="text-2xl font-bold text-gray-900">
             {parsedValues.length}
           </div>
-          <div className="text-sm text-gray-600">
-            Total Fields
-          </div>
+          <div className="text-sm text-gray-600">Total Fields</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <div className="text-2xl font-bold text-green-600">
             {nonNullValues.length}
           </div>
-          <div className="text-sm text-gray-600">
-            Populated Fields
-          </div>
+          <div className="text-sm text-gray-600">Populated Fields</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <div className="text-2xl font-bold text-red-600">
             {nullValues.length}
           </div>
-          <div className="text-sm text-gray-600">
-            Missing Fields
-          </div>
+          <div className="text-sm text-gray-600">Missing Fields</div>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <div className="text-2xl font-bold text-blue-600">
-            {parsedValues.length > 0 ? Math.round((nonNullValues.length / parsedValues.length) * 100) : 0}%
+            {parsedValues.length > 0
+              ? Math.round((nonNullValues.length / parsedValues.length) * 100)
+              : 0}
+            %
           </div>
-          <div className="text-sm text-gray-600">
-            Completion Rate
-          </div>
+          <div className="text-sm text-gray-600">Completion Rate</div>
         </div>
       </div>
 
@@ -255,11 +262,7 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
                   </span>
                 </label>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRetry}
-              >
+              <Button variant="outline" size="sm" onClick={handleRetry}>
                 Re-extract
               </Button>
             </div>
@@ -289,31 +292,37 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {displayValues.map((item, index) => (
-                <tr 
+                <tr
                   key={index}
                   className={`hover:bg-gray-50 cursor-pointer transition-colors ${
-                    item.isNull ? 'bg-red-50' : ''
+                    item.isNull ? "bg-red-50" : ""
                   }`}
                   onClick={() => setSelectedValue(item)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <code className="bg-gray-100 px-2 py-1 rounded text-xs">
-                      {item.path.split('.')[0].toUpperCase()}
+                      {item.path.split(".")[0].toUpperCase()}
                     </code>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {item.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {item.key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      getValueTypeColor(item.value)
-                    }`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getValueTypeColor(
+                        item.value,
+                      )}`}
+                    >
                       {getValueTypeLabel(item.value)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                     {item.isNull ? (
-                      <span className="text-red-600 font-medium">Not extracted</span>
+                      <span className="text-red-600 font-medium">
+                        Not extracted
+                      </span>
                     ) : (
                       <span className="font-mono text-xs">
                         {formatJsonValue(item.value)}
@@ -343,7 +352,7 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
               <BarChart3 className="w-12 h-12 mx-auto" />
             </div>
             <p className="text-gray-500">
-              {filterNull ? 'No missing fields found' : 'No data to display'}
+              {filterNull ? "No missing fields found" : "No data to display"}
             </p>
           </div>
         )}
@@ -363,7 +372,7 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
                   SOAP Section
                 </label>
                 <p className="text-sm text-gray-900 capitalize">
-                  {selectedValue.path.split('.')[0]}
+                  {selectedValue.path.split(".")[0]}
                 </p>
               </div>
               <div>
@@ -379,7 +388,9 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
                   Field Name
                 </label>
                 <p className="text-sm text-gray-900">
-                  {selectedValue.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {selectedValue.key
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
                 </p>
               </div>
               <div>
@@ -387,15 +398,14 @@ export const ExtractSOAP: React.FC<ExtractSOAPProps> = ({
                   Value
                 </label>
                 <pre className="bg-gray-100 px-3 py-2 rounded text-sm overflow-x-auto">
-                  {selectedValue.isNull ? 'Not extracted from summary' : formatJsonValue(selectedValue.value)}
+                  {selectedValue.isNull
+                    ? "Not extracted from summary"
+                    : formatJsonValue(selectedValue.value)}
                 </pre>
               </div>
             </div>
             <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setSelectedValue(null)}
-              >
+              <Button variant="outline" onClick={() => setSelectedValue(null)}>
                 Close
               </Button>
             </div>

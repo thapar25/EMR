@@ -18,7 +18,7 @@ export interface StreamingChunk {
   id: string;
   content: string;
   timestamp: Date;
-  type: 'data' | 'error' | 'complete';
+  type: "data" | "error" | "complete";
 }
 
 export interface ParsedJsonValue {
